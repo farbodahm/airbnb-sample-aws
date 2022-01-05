@@ -31,3 +31,5 @@ class ImportCsvStack(Stack):
         # Add Create Event only for .jpg files
         csv_bucket.add_object_created_notification(
            notification, s3.NotificationKeyFilter(suffix='.csv'))
+
+        csv_bucket.grant_read(process_func)
