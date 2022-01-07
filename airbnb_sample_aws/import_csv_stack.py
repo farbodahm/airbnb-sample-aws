@@ -15,6 +15,7 @@ from constructs import Construct
 
 DATABASE_NAME = 'airbnb'
 
+
 class ImportCsvStack(Stack):
     """ Stack for creating infrastructure of migrating Airbnb
     data sets to DB.
@@ -80,6 +81,7 @@ class ImportCsvStack(Stack):
                        handler='process_csv.handler',
                        code=lambda_.Code.from_asset('./lambda'),
                        vpc=vpc,
+                       layers=[pymysql_lambda_layer,],
                        environment={'DB_SECRET_MANAGER_ARN': rds_instance.secret.secret_arn})
 
         # Create trigger for Lambda function using suffix
@@ -90,6 +92,8 @@ class ImportCsvStack(Stack):
         csv_bucket.add_object_created_notification(
            notification, s3.NotificationKeyFilter(suffix='.csv'))
 
+        # Permissions for process_func lambda
         csv_bucket.grant_read(process_func)
+        rds_instance.connections.allow_from(process_func, ec2.Port.tcp(3306))
         rds_instance.secret.grant_read(process_func)
         rds_instance.grant_connect(process_func)
