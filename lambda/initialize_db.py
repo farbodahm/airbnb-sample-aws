@@ -28,14 +28,25 @@ except pymysql.MySQLError as e:
 
 # TODO: Put queries in seperate .sql file
 queries = [
-    """CREATE TABLE IF NOT EXISTS listings (
-id INT PRIMARY KEY, 
-name VARCHAR(90), 
-neighbourhood VARCHAR(65),
-latitude DOUBLE,
-longitude DOUBLE,
-room_type VARCHAR(25),
-price INT)""",
+    """
+CREATE TABLE IF NOT EXISTS listings (
+    id INT PRIMARY KEY, 
+    name VARCHAR(90), 
+    neighbourhood VARCHAR(65),
+    latitude DOUBLE,
+    longitude DOUBLE,
+    room_type VARCHAR(25),
+    price INT
+)""",
+    """
+CREATE TABLE IF NOT EXISTS calendars (
+    calendar_id INT AUTO_INCREMENT PRIMARY KEY,
+    listing_id INT NOT NULL,
+    start_date DATE,
+    price DOUBLE,
+    minimum_nights INT,
+    maximum_nights INT
+)""",
 ]
 
 
