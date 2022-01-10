@@ -35,23 +35,22 @@ def write_listings_csv_to_db(bucket_name: str, object_key: str) -> None:
     data = s3_object.get()['Body'].read().decode('utf-8').splitlines()
 
     lines = csv.reader(data)
-    headers = next(lines)
+    
+    next(lines)  # Skip CSV headers
 
-    item_count = 0
+    data = [(line[0], line[1], line[5], line[6], line[7], line[8], line[9],) for line in lines]
+    query = "INSERT INTO listings (`id`, `name`, `neighbourhood`, `latitude`, `longitude`, `room_type`, `price`)\
+             VALUES (%s, %s, %s, %s, %s, %s, %s)"
+
     with conn.cursor() as cur:
-        for line in lines:
-            query = f"INSERT INTO listings (`id`, `name`, `neighbourhood`, `latitude`, `longitude`, `room_type`, `price`)\
-                      VALUES ('{line[0]}', '{line[1]}', '{line[5]}', '{line[6]}', '{line[7]}', '{line[8]}', '{line[9]}')"
-            try:
-                cur.execute(query)
-            except Exception as e:
-                print(line, query)
-                print(e)
-            else:
-                item_count += 1
+        try:
+            result = cur.executemany(query, data)
+        except Exception as e:
+            print('Unexpected error: could not write data to db:\n', e)
 
     conn.commit()
-    print(f'Item Count: {item_count}')
+    print(f'Item Count: {result}')
+
 
 def handler(event: dict, context):
     for record in event['Records']:                  
