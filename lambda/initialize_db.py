@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS calendars (
     calendar_id INT AUTO_INCREMENT PRIMARY KEY,
     listing_id INT NOT NULL,
     start_date DATE,
+    available ENUM('t', 'f'),
     price DOUBLE,
     minimum_nights INT,
     maximum_nights INT

@@ -61,9 +61,9 @@ def write_calendars_csv_to_db(bucket_name: str, object_key: str) -> None:
     
     next(lines)  # Skip CSV headers
 
-    data = [(line[0], line[1], line[3][1:], line[5], line[6],) for line in lines]
-    query = "INSERT INTO calendars (`listing_id`, `start_date`, `price`, `minimum_nights`, `maximum_nights`)\
-             VALUES (%s, %s, %s, %s, %s)"
+    data = [(line[0], line[1], line[2], line[3][1:], line[5], line[6],) for line in lines]
+    query = "INSERT INTO calendars (`listing_id`, `start_date`, `available`, `price`, `minimum_nights`, `maximum_nights`)\
+             VALUES (%s, %s, %s, %s, %s, %s)"
 
     with conn.cursor() as cur:
         try:
