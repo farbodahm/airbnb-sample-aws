@@ -52,8 +52,36 @@ def write_listings_csv_to_db(bucket_name: str, object_key: str) -> None:
     print(f'Item Count: {result}')
 
 
+def write_calendars_csv_to_db(bucket_name: str, object_key: str) -> None:
+    """ Write Calendars CSV uploaded file to DB """
+    s3_object = s3.Object(bucket_name, object_key)
+    data = s3_object.get()['Body'].read().decode('utf-8').splitlines()
+
+    lines = csv.reader(data)
+    
+    next(lines)  # Skip CSV headers
+
+    data = [(line[0], line[1], line[3][1:], line[5], line[6],) for line in lines]
+    query = "INSERT INTO calendars (`listing_id`, `start_date`, `price`, `minimum_nights`, `maximum_nights`)\
+             VALUES (%s, %s, %s, %s, %s)"
+
+    with conn.cursor() as cur:
+        try:
+            result = cur.executemany(query, data)
+        except Exception as e:
+            print('Unexpected error: could not write data to db:\n', e)
+
+    conn.commit()
+    print(f'Item Count: {result}')
+
+
 def handler(event: dict, context):
-    for record in event['Records']:                  
-        bucket_name = record['s3']['bucket']['name']         
+    """ Handler func is called when a new file is uploaded to S3 bucket """
+    for record in event['Records']:
+        bucket_name = record['s3']['bucket']['name']
         object_key = record['s3']['object']['key']
-        write_listings_csv_to_db(bucket_name, object_key) 
+
+        if 'listings' in object_key:
+            write_listings_csv_to_db(bucket_name, object_key)
+        elif 'calendar' in object_key:
+            write_calendars_csv_to_db(bucket_name, object_key)
