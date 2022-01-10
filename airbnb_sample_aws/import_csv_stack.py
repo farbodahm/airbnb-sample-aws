@@ -9,6 +9,7 @@ from aws_cdk import (
     CustomResource,
     aws_logs as logs,
     Stack,
+    Duration,
 )
 from constructs import Construct
 
@@ -82,6 +83,8 @@ class ImportCsvStack(Stack):
                        code=lambda_.Code.from_asset('./lambda'),
                        vpc=vpc,
                        layers=[pymysql_lambda_layer,],
+                       memory_size=512,
+                       timeout=Duration.seconds(360),
                        environment={'DB_SECRET_MANAGER_ARN': rds_instance.secret.secret_arn})
 
         # Create trigger for Lambda function using suffix
