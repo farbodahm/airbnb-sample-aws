@@ -5,8 +5,6 @@ from constructs import Construct
 from aws_cdk import (
     aws_lambda as lambda_,
     aws_ec2 as ec2,
-    custom_resources as cr,
-    aws_logs as logs,
     aws_rds as rds,
     aws_apigateway as apigateway,
     CfnOutput,
