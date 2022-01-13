@@ -46,7 +46,7 @@ class CsvMigrationService(Construct):
             'ProcessCSV',
             runtime=lambda_.Runtime.PYTHON_3_9,
             handler='process_csv.handler',
-            code=lambda_.Code.from_asset('./lambda'),
+            code=lambda_.Code.from_asset('./lambda/process_csv'),
             vpc=vpc,
             layers=layers,
             memory_size=lambda_memory_size,

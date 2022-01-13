@@ -33,7 +33,7 @@ class DbInitializerService(Construct):
             'InitializeDB',
             runtime=lambda_.Runtime.PYTHON_3_9,
             handler='initialize_db.handler',
-            code=lambda_.Code.from_asset('./lambda'),
+            code=lambda_.Code.from_asset('./lambda/process_csv'),
             vpc=vpc,
             layers=layers,
             environment={'DB_SECRET_MANAGER_ARN': rds_instance.secret.secret_arn}
