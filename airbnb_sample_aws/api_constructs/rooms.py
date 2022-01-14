@@ -50,13 +50,19 @@ class RoomsApiService(Construct):
             integration=apigateway.LambdaIntegration(
                 process_get_func,
                 proxy=True,
-            )
+            ),
         )
 
+        # rds_instance.connections.allow_from(process_get_func, ec2.Port.tcp(3306))
+        process_get_func.connections.allow_to(rds_instance, ec2.Port.tcp(3306))
+        rds_instance.secret.grant_read(process_get_func)
+        rds_instance.grant_connect(process_get_func)
+
+  
         # Create an Output for the API URL
         CfnOutput(
             self,
             'roomsApi',
             value=api.url,
-            description='URL of the /rooms API'
+            description='URL of the /rooms API',
         )
