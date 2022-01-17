@@ -1,4 +1,4 @@
-""" Building block for /rooms and all its resources. """
+""" Building block for /calendars and all its resources. """
 
 from typing import Sequence
 from constructs import Construct
@@ -11,8 +11,8 @@ from aws_cdk import (
 )
 
 
-class RoomsApiService(Construct):
-    """ All /rooms related infrastructures """
+class CalendarsApiService(Construct):
+    """ All /calendars related infrastructures """
     def __init__(self, scope: Construct, id: str,
                  vpc: ec2.IVpc,
                  rds_instance: rds.DatabaseInstance,
@@ -32,20 +32,20 @@ class RoomsApiService(Construct):
             'ProcessGet',
             runtime=lambda_.Runtime.PYTHON_3_9,
             handler='get.handler',
-            code=lambda_.Code.from_asset('./lambda/api/rooms'),
+            code=lambda_.Code.from_asset('./lambda/api/calendars'),
             vpc=vpc,
             layers=layers,
             environment={'DB_SECRET_MANAGER_ARN': rds_instance.secret.secret_arn}
         )
 
-        # Main Api Gateway for /rooms
+        # Main Api Gateway for /calendars
         api = apigateway.RestApi(
             self,
-            'rooms-api',
+            'calendars-api',
         )
 
-        rooms = api.root.add_resource('rooms')
-        rooms.add_method(
+        calendars = api.root.add_resource('calendars')
+        calendars.add_method(
             'GET',
             integration=apigateway.LambdaIntegration(
                 process_get_func,
@@ -62,7 +62,7 @@ class RoomsApiService(Construct):
         # Create an Output for the API URL
         CfnOutput(
             self,
-            'roomsApi',
+            'calendarsApi',
             value=api.url,
-            description='URL of the /rooms API',
+            description='URL of the /calendars API',
         )

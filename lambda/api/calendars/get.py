@@ -1,4 +1,4 @@
-""" Respond to GET /rooms """
+""" Respond to GET /calendars """
 from typing import List, Tuple
 import pymysql
 import boto3

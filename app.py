@@ -17,7 +17,7 @@ infra_stack = InfraStack(
     'airbnb',
     env=ENV_EU
 )
-stack1 = ImportCsvStack(
+import_csv_stack = ImportCsvStack(
     app,
     'ImportCsvStack',
     infra_stack.network_construct.vpc,
@@ -26,7 +26,7 @@ stack1 = ImportCsvStack(
     [infra_stack.layers_construct.pymysql_lambda_layer,],
     env=ENV_EU
 )
-stack2 = ApiStack(
+api_stack = ApiStack(
     app, 
     'ApiStack',
     infra_stack.network_construct.vpc,
@@ -35,8 +35,8 @@ stack2 = ApiStack(
     env=ENV_EU
 )
 
-cdk.Tags.of(stack1).add('owner', 'farbod')
-cdk.Tags.of(stack2).add('owner', 'farbod')
+cdk.Tags.of(import_csv_stack).add('owner', 'farbod')
+cdk.Tags.of(api_stack).add('owner', 'farbod')
 cdk.Tags.of(infra_stack).add('owner', 'farbod')
 
 

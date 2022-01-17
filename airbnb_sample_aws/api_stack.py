@@ -9,7 +9,7 @@ from aws_cdk import (
 
 
 from airbnb_sample_aws.api_constructs import (
-    rooms,
+    calendars,
 )
 
 
@@ -31,9 +31,9 @@ class ApiStack(Stack):
         """
         super().__init__(scope, construct_id, **kwargs)
 
-        rooms.RoomsApiService(
+        calendars.CalendarsApiService(
             self,
-            'rooms-construct',
+            'calendars-construct',
             vpc,
             rds_instance,
             layers
