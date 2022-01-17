@@ -42,11 +42,3 @@ class DatabaseService(Construct):
             database_name=database_name,
         )
 
-        # PyMySql Lambda layer
-        self.pymysql_lambda_layer = lambda_.LayerVersion(
-            self,
-            'MymysqlLambdaLayer',
-            code=lambda_.Code.from_asset('./layers/pymysql.zip'),
-            compatible_runtimes=[lambda_.Runtime.PYTHON_3_9],
-            description='PyMySql Library',
-        )

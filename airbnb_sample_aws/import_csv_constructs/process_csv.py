@@ -1,7 +1,6 @@
 """ Building block for ingesting uploaded CSVs to DB """
 
-
-from typing import List
+from typing import Sequence
 from constructs import Construct
 from aws_cdk import (
     aws_lambda as lambda_,
@@ -19,7 +18,7 @@ class CsvMigrationService(Construct):
     def __init__(self, scope: Construct, id: str,
                  vpc: ec2.IVpc,
                  rds_instance: rds.DatabaseInstance,
-                 layers: List[lambda_.ILayerVersion],
+                 layers: Sequence[lambda_.ILayerVersion],
                  lambda_memory_size: int = 512,
                  lambda_timeout_seconds: int = 360,
                 ):
@@ -27,7 +26,7 @@ class CsvMigrationService(Construct):
         Parameters:
         vpc (IVpc): Vpc that the database is in it.
         rds_instance (DatabaseInstance): RDS database instance to grant permissions.
-        layers (List[ILayerVersion]): Layers that are needed to be associated with lambdas.
+        layers (Sequence[ILayerVersion]): Layers that are needed to be associated with lambdas.
         lambda_memory_size (int): Maximum memory allowed for processing CSVs in MBs.
         lambda_timeout_seconds (int): Maximum time allowed for processing CSVs in seconds.
         """

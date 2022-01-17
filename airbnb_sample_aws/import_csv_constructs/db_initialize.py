@@ -1,6 +1,6 @@
 """ Building block for initializing DB during deployment using Custom Resources. """
 
-from typing import List
+from typing import Sequence
 from constructs import Construct
 from aws_cdk import (
     aws_lambda as lambda_,
@@ -17,13 +17,13 @@ class DbInitializerService(Construct):
     def __init__(self, scope: Construct, id: str,
                  vpc: ec2.IVpc,
                  rds_instance: rds.DatabaseInstance,
-                 layers: List[lambda_.ILayerVersion],
+                 layers: Sequence[lambda_.ILayerVersion],
                  ):
         """
         Parameters:
         vpc (IVpc): Vpc that the database is in it.
         rds_instance (DatabaseInstance): RDS database instance to grant permissions.
-        layers (List[ILayerVersion]): Layers that are needed to be associated with lambdas.
+        layers (Sequence[ILayerVersion]): Layers that are needed to be associated with lambdas.
         """
         super().__init__(scope, id)
 

@@ -1,5 +1,7 @@
+from typing import Sequence
 from constructs import Construct
 from aws_cdk import (
+    aws_lambda as lambda_,
     Stack,
 )
 
@@ -16,7 +18,13 @@ class ImportCsvStack(Stack):
     data sets to DB.
     """
 
-    def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
+    def __init__(self, scope: Construct, construct_id: str, 
+                 layers: Sequence[lambda_.ILayerVersion],
+                 **kwargs) -> None:
+        """
+        Parameters:
+        layers (Sequence[ILayerVersion]): Layers that are needed to be associated with lambdas.
+        """
         super().__init__(scope, construct_id, **kwargs)
 
         self.db_construct = db.DatabaseService(
@@ -25,18 +33,18 @@ class ImportCsvStack(Stack):
             'airbnb',
         )
 
-        db_initialize_construct = db_initialize.DbInitializerService(
+        db_initialize.DbInitializerService(
             self,
             'db-initialize-construct',
             self.db_construct.vpc,
             self.db_construct.rds_instance,
-            [self.db_construct.pymysql_lambda_layer,],
+            layers,
         )
 
-        process_csv_construct = process_csv.CsvMigrationService(
+        process_csv.CsvMigrationService(
             self,
             'process-csv-construct',
             self.db_construct.vpc,
             self.db_construct.rds_instance,
-            [self.db_construct.pymysql_lambda_layer,],
+            layers,
         )
