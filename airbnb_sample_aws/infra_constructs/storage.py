@@ -1,4 +1,4 @@
-""" Building block for DB """
+""" Building block for storage services """
 
 from constructs import Construct
 from aws_cdk import (
@@ -8,9 +8,12 @@ from aws_cdk import (
 )
 
 
-class DatabaseService(Construct):
-    """ Main RDS Construct """
-    def __init__(self, scope: Construct, id: str, database_name: str, vpc: ec2.IVpc):
+class StorageService(Construct):
+    """ Storage related Construct """
+    def __init__(self, scope: Construct, id: str,
+                 database_name: str,
+                 vpc: ec2.IVpc
+                ) -> None:
         """
         Parameters:
         database_name (str): Name of your database to access

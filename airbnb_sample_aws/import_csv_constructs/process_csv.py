@@ -40,7 +40,7 @@ class CsvMigrationService(Construct):
         )
 
         # Create a lambda function for processing uploaded CSVs
-        self.process_func = lambda_.Function(
+        process_func = lambda_.Function(
             self,
             'ProcessCSV',
             runtime=lambda_.Runtime.PYTHON_3_9,
@@ -54,7 +54,7 @@ class CsvMigrationService(Construct):
         )
 
         # Create trigger for Lambda function using suffix
-        notification = s3_notify.LambdaDestination(self.process_func)
+        notification = s3_notify.LambdaDestination(process_func)
         notification.bind(self, self.csv_bucket)
 
         # Add Create Event only for .csv files
@@ -62,9 +62,9 @@ class CsvMigrationService(Construct):
            notification, s3.NotificationKeyFilter(suffix='.csv')
         )
 
-        self.csv_bucket.grant_read(self.process_func)
+        self.csv_bucket.grant_read(process_func)
 
         # Grant DB connection access to Lambda function
-        rds_instance.connections.allow_from(self.process_func, ec2.Port.tcp(3306))
-        rds_instance.secret.grant_read(self.process_func)
-        rds_instance.grant_connect(self.process_func)
+        process_func.connections.allow_to(rds_instance, ec2.Port.tcp(3306))
+        rds_instance.secret.grant_read(process_func)
+        rds_instance.grant_connect(process_func)

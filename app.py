@@ -14,12 +14,14 @@ app = cdk.App()
 infra_stack = InfraStack(
     app,
     'InfraStack',
+    'airbnb',
     env=ENV_EU
 )
 stack1 = ImportCsvStack(
     app,
     'ImportCsvStack',
     infra_stack.network_construct.vpc,
+    infra_stack.storage_construct.rds_instance,
     [infra_stack.layers_construct.pymysql_lambda_layer,],
     env=ENV_EU
 )
@@ -27,7 +29,7 @@ stack2 = ApiStack(
     app, 
     'ApiStack',
     infra_stack.network_construct.vpc,
-    stack1.db_construct.rds_instance,
+    infra_stack.storage_construct.rds_instance,
     [infra_stack.layers_construct.pymysql_lambda_layer,],
     env=ENV_EU
 )
