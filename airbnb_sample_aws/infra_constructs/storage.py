@@ -4,6 +4,7 @@ from constructs import Construct
 from aws_cdk import (
     aws_ec2 as ec2,
     aws_rds as rds,
+    aws_s3 as s3,
     RemovalPolicy,
 )
 
@@ -34,4 +35,11 @@ class StorageService(Construct):
             removal_policy=RemovalPolicy.DESTROY,
             deletion_protection=False,
             database_name=database_name,
+        )
+
+        # Create bucket for storing CSVs
+        self.csv_bucket = s3.Bucket(
+            self,
+            'CSV-Bucket',
+            removal_policy=RemovalPolicy.DESTROY
         )

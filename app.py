@@ -22,6 +22,7 @@ stack1 = ImportCsvStack(
     'ImportCsvStack',
     infra_stack.network_construct.vpc,
     infra_stack.storage_construct.rds_instance,
+    infra_stack.storage_construct.csv_bucket.bucket_arn,
     [infra_stack.layers_construct.pymysql_lambda_layer,],
     env=ENV_EU
 )
