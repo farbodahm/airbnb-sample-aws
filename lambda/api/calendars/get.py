@@ -5,6 +5,8 @@ import boto3
 import json
 from os import environ
 
+DB_DEFAULT_PAGE_SIZE = 10
+
 # Get DB credentails from SecretsManager
 secrets_manager = boto3.client('secretsmanager')
 secret_value = secrets_manager.get_secret_value(
@@ -31,9 +33,13 @@ except pymysql.MySQLError as e:
 
 def get_calendars_from_db(parameter_available: str,
                           parameter_date: str,
-                          parameter_days: str
+                          parameter_days: str,
+                          page_number: int,
                           ) -> Tuple[int, List[dict]]:
-    """ Return the calendars from DB that have the parameters needed by the client. """
+    """
+    Return the calendars from DB that have the parameters needed by the client.
+    page_number (int): Is used for pagination.
+    """
 
     query = """
     SELECT
@@ -55,12 +61,22 @@ def get_calendars_from_db(parameter_available: str,
         c.available = %s
             AND c.start_date = %s
             AND %s BETWEEN c.minimum_nights AND c.maximum_nights
+    ORDER BY c.price
+    LIMIT %s , %s
     """
 
     with conn.cursor() as cur:
         try:
-            result_count = cur.execute(query, (parameter_available, parameter_date, parameter_days,))
-            result = cur.fetchmany(5)
+            result_count = cur.execute(
+                query,
+                (parameter_available,
+                 parameter_date,
+                 parameter_days,
+                 (page_number-1) * DB_DEFAULT_PAGE_SIZE,
+                 DB_DEFAULT_PAGE_SIZE,)
+            )
+
+            result = cur.fetchall()
         except Exception as e:
             print('Unexpected error: could not write data to db:\n', e)
     
@@ -73,6 +89,7 @@ def handler(event: dict, context):
         event['queryStringParameters']['available'],
         event['queryStringParameters']['date'],
         event['queryStringParameters']['days'],
+        int(event['queryStringParameters'].get('page', 1)),
     )
     status_code = 200
 
