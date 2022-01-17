@@ -8,6 +8,7 @@ from airbnb_sample_aws.infra_constructs import (
     layers,
     network,
     storage,
+    db_initialize,
 )
 
 
@@ -42,4 +43,12 @@ class InfraStack(Stack):
             'StorageService',
             database_name,
             self.network_construct.vpc,
+        )
+
+        db_initialize.DbInitializerService(
+            self,
+            'db-initialize-construct',
+            self.network_construct.vpc,
+            self.storage_construct.rds_instance,
+            [self.layers_construct.pymysql_lambda_layer,],
         )

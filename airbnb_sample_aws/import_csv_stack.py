@@ -9,7 +9,6 @@ from aws_cdk import (
 
 
 from airbnb_sample_aws.import_csv_constructs import (
-    db_initialize,
     process_csv,
 )
 
@@ -31,14 +30,6 @@ class ImportCsvStack(Stack):
         layers (Sequence[ILayerVersion]): Layers that are needed to be associated with lambdas.
         """
         super().__init__(scope, construct_id, **kwargs)
-
-        db_initialize.DbInitializerService(
-            self,
-            'db-initialize-construct',
-            vpc,
-            rds_instance,
-            layers,
-        )
 
         process_csv.CsvMigrationService(
             self,
