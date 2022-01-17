@@ -3,6 +3,7 @@ from constructs import Construct
 from aws_cdk import (
     aws_lambda as lambda_,
     Stack,
+    aws_ec2 as ec2,
 )
 
 
@@ -18,7 +19,8 @@ class ImportCsvStack(Stack):
     data sets to DB.
     """
 
-    def __init__(self, scope: Construct, construct_id: str, 
+    def __init__(self, scope: Construct, construct_id: str,
+                 vpc: ec2.IVpc,
                  layers: Sequence[lambda_.ILayerVersion],
                  **kwargs) -> None:
         """
@@ -31,12 +33,13 @@ class ImportCsvStack(Stack):
             self, 
             'db-construct',
             'airbnb',
+            vpc,
         )
 
         db_initialize.DbInitializerService(
             self,
             'db-initialize-construct',
-            self.db_construct.vpc,
+            vpc,
             self.db_construct.rds_instance,
             layers,
         )
@@ -44,7 +47,7 @@ class ImportCsvStack(Stack):
         process_csv.CsvMigrationService(
             self,
             'process-csv-construct',
-            self.db_construct.vpc,
+            vpc,
             self.db_construct.rds_instance,
             layers,
         )

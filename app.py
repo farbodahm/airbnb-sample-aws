@@ -19,13 +19,14 @@ infra_stack = InfraStack(
 stack1 = ImportCsvStack(
     app,
     'ImportCsvStack',
+    infra_stack.network_construct.vpc,
     [infra_stack.layers_construct.pymysql_lambda_layer,],
     env=ENV_EU
 )
 stack2 = ApiStack(
     app, 
     'ApiStack',
-    stack1.db_construct.vpc,
+    infra_stack.network_construct.vpc,
     stack1.db_construct.rds_instance,
     [infra_stack.layers_construct.pymysql_lambda_layer,],
     env=ENV_EU
