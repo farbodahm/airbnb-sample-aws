@@ -9,6 +9,7 @@ from airbnb_sample_aws.infra_constructs import (
     network,
     storage,
     db_initialize,
+    messaging,
 )
 
 
@@ -43,6 +44,11 @@ class InfraStack(Stack):
             'StorageService',
             database_name,
             self.network_construct.vpc,
+        )
+
+        self.messaging_construct = messaging.MessagingService(
+            self,
+            'MessagingConstruct',
         )
 
         db_initialize.DbInitializerService(
