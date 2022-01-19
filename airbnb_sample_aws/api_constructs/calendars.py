@@ -165,6 +165,10 @@ class CalendarsApiService(Construct):
         rds_instance.secret.grant_read(process_post_func)
         rds_instance.grant_connect(process_post_func)
 
+        process_book_func.connections.allow_to(rds_instance, ec2.Port.tcp(3306))
+        rds_instance.secret.grant_read(process_book_func)
+        rds_instance.grant_connect(process_book_func)
+
         # Create an Output for the API URL
         CfnOutput(
             self,
