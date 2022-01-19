@@ -5,6 +5,7 @@ from aws_cdk import (
     aws_lambda as lambda_,
     aws_ec2 as ec2,
     aws_rds as rds,
+    aws_sqs as sqs,
 )
 
 
@@ -21,6 +22,7 @@ class ApiStack(Stack):
                  vpc: ec2.IVpc,
                  rds_instance: rds.DatabaseInstance,
                  layers: Sequence[lambda_.ILayerVersion],
+                 post_calendars_queue: sqs.IQueue,
                  **kwargs
                 ) -> None:
         """
@@ -36,5 +38,6 @@ class ApiStack(Stack):
             'calendars-construct',
             vpc,
             rds_instance,
-            layers
+            layers,
+            post_calendars_queue,
         )

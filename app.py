@@ -32,6 +32,7 @@ api_stack = ApiStack(
     infra_stack.network_construct.vpc,
     infra_stack.storage_construct.rds_instance,
     [infra_stack.layers_construct.pymysql_lambda_layer,],
+    infra_stack.messaging_construct.post_calendars_queue,
     env=ENV_EU
 )
 
