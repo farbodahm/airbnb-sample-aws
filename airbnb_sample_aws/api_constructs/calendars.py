@@ -55,13 +55,29 @@ class CalendarsApiService(Construct):
             environment={'DB_SECRET_MANAGER_ARN': rds_instance.secret.secret_arn}
         )
 
+        # Lambda function for booking a room
+        process_book_func = lambda_.Function(
+            self, 
+            'ProcessBook',
+            runtime=lambda_.Runtime.PYTHON_3_9,
+            handler='patch.handler',
+            code=lambda_.Code.from_asset('./lambda/api/calendars/calendar'),
+            vpc=vpc,
+            layers=layers,
+            environment={'DB_SECRET_MANAGER_ARN': rds_instance.secret.secret_arn}
+        )
+
+
         # Main Api Gateway for /calendars
         api = apigateway.RestApi(
             self,
             'calendars-api',
         )
 
+        # /calendars
         calendars = api.root.add_resource('calendars')
+
+        # GET /calendars
         calendars.add_method(
             'GET',
             integration=apigateway.LambdaIntegration(
@@ -90,6 +106,7 @@ class CalendarsApiService(Construct):
             )
         )
 
+        # POST /calendars
         # Send POST requests to SQS queue
         calendars.add_method(
             'POST',
@@ -126,6 +143,18 @@ class CalendarsApiService(Construct):
             post_calendars_queue,
         )
         process_post_func.add_event_source(new_requests_event)
+
+        # /calendars/{calendar_id}
+        calendar = calendars.add_resource('{calendar_id}')
+
+        # PATCH /calendars/{calendar_id}
+        calendar.add_method(
+            'PATCH',
+            integration=apigateway.LambdaIntegration(
+                process_book_func,
+                proxy=True,
+            ),
+        )
 
         # Grant RDS related permissions
         process_get_func.connections.allow_to(rds_instance, ec2.Port.tcp(3306))
