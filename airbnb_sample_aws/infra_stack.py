@@ -10,6 +10,7 @@ from airbnb_sample_aws.infra_constructs import (
     storage,
     db_initialize,
     messaging,
+    glue_crawler,
 )
 
 
@@ -57,4 +58,10 @@ class InfraStack(Stack):
             self.network_construct.vpc,
             self.storage_construct.rds_instance,
             [self.layers_construct.pymysql_lambda_layer,],
+        )
+
+        glue_crawler.GlueCrawlerService(
+            self,
+            'GlueCrawlerConstruct',
+            'YOUR_S3_ARN',
         )
