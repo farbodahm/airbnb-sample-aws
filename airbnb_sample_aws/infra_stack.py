@@ -60,8 +60,10 @@ class InfraStack(Stack):
             [self.layers_construct.pymysql_lambda_layer,],
         )
 
+        # TODO: Create required S3 bucket with Glue DataBrew
         glue_crawler.GlueCrawlerService(
             self,
             'GlueCrawlerConstruct',
             'YOUR_S3_ARN',
+            'CSV_FILES_PATH',
         )
