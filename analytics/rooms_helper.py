@@ -1,6 +1,9 @@
+'''
+This file contains all helper functions related for analysing rooms data.
+'''
+
 from typing import Tuple, List
 from pyspark.sql import (
-    SparkSession,
     functions as F,
     DataFrame,
 )
