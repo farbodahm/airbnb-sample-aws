@@ -6,6 +6,10 @@ from pyspark.sql import (
     DataFrame,
     functions as F,
 )
+from rooms_helper import (
+    get_top_n_room_types,
+    get_price_average_per_roomtype,
+)
 
 
 def create_listings_dataframe(spark: SparkSession,
@@ -65,6 +69,14 @@ def main() -> None:
         spark,
         'S3_PATH_TO_CALENDARS_CSV_DATASET',
     )
+
+    # TODO: This is just for test. Should save result on S3
+    top_3_room_types = get_top_n_room_types(listings_df, 3)
+    total_rooms = listings_df.count()
+    print(f'Type {" ":<15} Count {" ":<2} Percentage {" ":<2} Average Price')
+    for i in top_3_room_types:
+        avg = get_price_average_per_roomtype(listings_df, calendars_df, i[0])
+        print(f'{i[0]:<20} {i[1]:<10} {i[1]/total_rooms*100:.2f}% {avg:13.2f}')
 
 
 main()
