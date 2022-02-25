@@ -33,4 +33,5 @@ object Main {
     writeDataFrameToFile(df, "S3_PATH_TO_WRITE_DATA")
   }
 
+  spark.close()
 }
