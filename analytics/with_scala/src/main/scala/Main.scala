@@ -23,13 +23,13 @@ object Main {
 
   // Analytics about room types
   // TODO: Take the paths as an argument
-  val topNRooms = getTopNRooms(listingsDf, 3)
+  val topNRooms = listingsDf.transform(getTopNRooms(3))
   writeDataFrameToFile(topNRooms, "S3_PATH_TO_WRITE_DATA")
 
   // Analytics about room average price
   // TODO: Take the paths as an argument
   for (row <- topNRooms.collect()) {
-    val df = getPriceAveragePerRoomtype(listingsDf, calendarsDf, row.get(0).asInstanceOf[String])
+    val df = listingsDf.transform(getPriceAveragePerRoomtype(calendarsDf, row.get(0).asInstanceOf[String]))
     writeDataFrameToFile(df, "S3_PATH_TO_WRITE_DATA")
   }
 

@@ -9,14 +9,12 @@ object Helper {
    *  @param listingsDf listings data DataFrame
    *  @param n maximum number of rooms to return
    */
-  def getTopNRooms(listingsDf: DataFrame, n: Int): DataFrame = {
-    val topNTypesDf = listingsDf
-    .groupBy("room_type")
-    .count()
-    .orderBy(desc("count"))
-    .limit(n)
-    
-    return topNTypesDf
+  def getTopNRooms(n: Int): DataFrame => DataFrame = { listingsDf =>
+    listingsDf
+      .groupBy("room_type")
+      .count()
+      .orderBy(desc("count"))
+      .limit(n)
   } 
 
   /** Returns average price of given room in given dataframes
@@ -26,16 +24,13 @@ object Helper {
    *  @param roomType room type to get the average
    */
   def getPriceAveragePerRoomtype(
-    listingsDf: DataFrame,
     calendarsDF: DataFrame,
     roomType: String
-  ): DataFrame = {
+  ): DataFrame => DataFrame = { listingsDf =>
     val df = listingsDf.join(calendarsDF, listingsDf("id") === calendarsDF("listing_id"))
-    val res = df.filter(df("room_type") === roomType)
+    df.filter(df("room_type") === roomType)
       .agg(avg(col("calendars_price")))
       .na
       .fill(0)
-
-    return res
   }
 }
