@@ -8,3 +8,11 @@ __pycache__
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+
+# Editor related:
+.vscode
+
+# Scala sbt build related:
+.metals
+target
+.bloop
